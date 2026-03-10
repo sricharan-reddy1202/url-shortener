@@ -23,3 +23,24 @@ exports.createShortUrl = async (req, res) => {
     res.status(500).json({ error: "Server Error" });
   }
 };
+exports.redirectUrl = async (req, res) => {
+  try {
+
+    const { shortId } = req.params;
+
+    const url = await Url.findOne({ shortId });
+
+    if (!url) {
+      return res.status(404).json({ error: "URL not found" });
+    }
+
+    url.clicks++;
+
+    await url.save();
+
+    res.redirect(url.originalUrl);
+
+  } catch (error) {
+    res.status(500).json({ error: "Server Error" });
+  }
+};
