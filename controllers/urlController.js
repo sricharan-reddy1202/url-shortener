@@ -1,11 +1,14 @@
 const Url = require("../models/url");
 const { nanoid } = require("nanoid");
-
+const validator = require("validator");
 exports.createShortUrl = async (req, res) => {
   try {
 
     const { url } = req.body;
-
+    if (!validator.isURL(url)) {
+      return res.status(400).json({ error: "Invalid URL" });
+    }
+  
     const shortId = nanoid(6);
 
     const newUrl = new Url({
